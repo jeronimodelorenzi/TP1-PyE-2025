@@ -43,3 +43,25 @@ colnames(datos) <- c("id", "provincia", "barrio",
 
 # Visualizar dataset.
 View(datos)
+
+
+# ___________________________________________
+# VARIABLES
+# 1.4: cant_integrantes - Cuantitativa discreta.
+# 3.2: max_personas_dormitorio - Cuantitativa discreta.
+# 4.3: tipo_tenencia - Categórica nominal.
+# 4.4.2: costo_alquiler: Cuantitativa continua (intervalo).
+# 5.3: presion_agua - Categórica ordinal.
+# 5.16: agua_caliente_baño - Categórica nominal.
+# 5.2.2: litros_almacenados - Cuantitativa continua.
+# 6.2: energia_vivienda - Categórica de respuesta múltiple.
+# 9.5: material_puertas - Categórica de respuesta múltiple.
+# 9.6: material_paredes - Categórica discreta
+# 9.9: humedad - Categórica de respuesta múltiple
+# alguna de basura: 11.8
+
+# Relación categórica discreta + cuantitativa discreta: tipo_tenencia + cantidad_personas.
+# Relación categórica discreta + categórica discreta: material_pared + humedad
+# Relación cuantitativa + cuantitativa: cant_integrantes + litros_almacenados
+
+# Tipo de piso/tiene vereda + inundación (11.9)
