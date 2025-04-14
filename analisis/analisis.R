@@ -2,6 +2,7 @@
 # Instalo los paquetes necesarios (si aún no los tengo instalados)
 # install.packages("googledrive")
 # install.packages("readxl")
+# install.packages("tidyverse")
 
 library(googledrive)
 library(readxl)
@@ -17,7 +18,7 @@ googledrive::drive_download(as_id("1IRhvzOQkvuspQF3TAsBCI-68i8ya0_hy"),
                             overwrite = T)
 
 # Cargo el archivo como .xlsx
-datos <- readxl::read_excel("Datos_LP.xlsx", 
+datos = readxl::read_excel("Datos_LP.xlsx", 
                             col_names = TRUE, 
                             skip = 2)
 
@@ -27,7 +28,7 @@ ncol(datos)
 nrow(datos)
 
 # Modificar nombre de las columnas.
-colnames(datos) <- c("id", "provincia", "barrio",
+colnames(datos) = c("id", "provincia", "barrio",
                      "edad_jefe_hogar","años_residencia","cant_integrantes","cant_familias", "cant_varones","cant_mujeres","cant_disidentes", "menores_18", "personas_discapacidad",
                      "cant_dormitorios", "max_personas_dormitorio",
                      "certificado_renabap", "intento_desalojo", "cant_desalojos", "años_ultimo_desalojo", "tipo_tenencia", "contrato_alquiler", "costo_alquiler", "aumento_alquiler", "porcentaje_aumento_alquiler",
@@ -39,11 +40,6 @@ colnames(datos) <- c("id", "provincia", "barrio",
                      "calle_asfaltqada", "salida_calle", "vereda_calle", "alumbrado_publico", "calificacion_arbolado", "plagas", "plagas_cucarachas", "plagas_mosquitos", "plagas_ratas", 
                      "esparcimiento_polideportivo", "esparcimiento_natatorio", "esparcimiento_playon", "esparcimiento_futbol", "esparcimiento_ejercicio", "esparcimiento_skatepark", "esparcimiento_balneario", "esparcimiento_sin", "esparcimiento_otro", "frecuencia_esparcimiento", "verdes_placita", "verdes_plaza", "verdes_parque", "verdes_sin", "frecuencia_verdes", "frecuencia_colectivo", "frecuencia_colectivo_dispar", "acceso_bici_publica", "basurales", "cesto_cuadra", "eliminacion_residuos", "recoleccion_residuos_municipio", "riesgo_inundacion"
 )
-
-
-# Visualizar dataset.
-View(datos)
-
 
 # ___________________________________________
 # VARIABLES
@@ -65,3 +61,50 @@ View(datos)
 # Relación cuantitativa + cuantitativa: cant_integrantes + litros_almacenados
 
 # Tipo de piso/tiene vereda + inundación (11.9)
+
+# ___________________________________________
+# LIMPIEZA DE DATOS
+library(tidyverse)
+
+maximo_año_residencia = max(datos$años_residencia)
+
+# Limpieza de datos.
+# - Pasar valores NA a 0 (asumimos NA como ausencia del atributo).
+# - Especificar ordinalidad a las categorías de una variable.
+datos_limpios <- datos %>% 
+  mutate(cant_desalojos = ifelse(is.na(cant_desalojos),0,cant_desalojos),
+         años_residencia = cut(años_residencia,
+                               breaks = c(-1, 0, 1, 5, 10, 20, 40, 60, maximo_año_residencia),
+                               labels = c("0 años (recién llegado)", 
+                                         "1 año", 
+                                         "2-5 años", 
+                                         "6-10 años", 
+                                         "11-20 años", 
+                                         "21-40 años",
+                                         "41-60 años",
+                                         "61+ años"),
+                               right = TRUE,
+                               ordered_result = TRUE))
+
+
+View(datos_limpios)
+
+# ___________________________________________
+# VISUALIZAR DATOS
+
+# Tabla de frecuencia según años de residencia en su vivienda.
+datos_limpios %>% group_by(años_residencia) %>%
+  summarize(cant = n())
+
+# Tabla de frecuencia según cantidad de integrantes de la familia.
+datos_limpios %>% group_by(cant_integrantes) %>%
+  summarize(cant = n())
+
+# Medidas resumen por grupo a partir del tipo de vivienda.
+datos_limpios %>% group_by(tipo_tenencia) %>%
+  summarize(cant_integrantes_media = mean(cant_integrantes),
+            cant_integrantes_ds = sd(cant_integrantes))
+
+# Medidas de posición.
+min(edad_jefe_hogar)
+max(edad_jefe_hogar)
