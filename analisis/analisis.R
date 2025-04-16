@@ -121,7 +121,6 @@ datos_limpios <- datos %>%
                               ordered_result = TRUE)
   )
 
-
 # Humedad
 
 cantidad_humedad_baño <- as.numeric(sum(datos$humedad_baño == "Baño", na.rm = TRUE))
@@ -175,3 +174,65 @@ datos_limpios %>% group_by(agua_baño, agua_caliente_baño) %>%
 # Medidas de posición.
 min(datos$edad_jefe_hogar)
 max(datos$edad_jefe_hogar)
+
+# ___________________________________________
+# GRÁFICOS
+
+library(ggplot2)
+library(scales)
+
+# Histograma de variable cuantitativa discreta: cantidad de integrantes por vivienda.
+ggplot(datos_limpios) +
+  aes(x = cant_integrantes, y = ..count../sum(..count..)) +
+  geom_histogram(fill = "lightgray", 
+                 col = "black",
+                 breaks = seq(0, max(datos_limpios$cant_integrantes, na.rm = TRUE) + 1, 1)) +
+  scale_x_continuous(breaks = function(x) seq(0, max(x), by = 1)) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(x = "Cantidad de integrantes", 
+       y = "Frecuencia relativa (%)",
+       title = "Distribución de integrantes por hogar")
+
+# Histograma de variable cuantitativa discreta: máxima cantidad de integrantes por dormitorio.
+ggplot(datos_limpios) +
+  aes(x = max_personas_dormitorio, y = ..count../sum(..count..)) +
+  geom_histogram(fill = "lightgray",
+                 col = "black",
+                 breaks = seq(0, max(datos_limpios$max_personas_dormitorio, na.rm = TRUE) + 1, 1)) +
+  scale_x_continuous(breaks = function(x) seq(0, max(x), by = 1)) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(x = "Máximo de personas por dormitorio", 
+       y = "Frecuencia relativa (%)",
+       title = "Distribución de personas por dormitorio")
+
+# Gráfico de barras de variable categórica en escala nominal: tipo de tenencia de la vivienda
+datos_limpios %>%
+  count(tipo_tenencia) %>%
+  mutate(porcentaje = n / sum(n) * 100) %>%
+  ggplot(aes(
+    x = reorder(tipo_tenencia, -n),  # Ordenar por frecuencia
+    y = porcentaje
+  )) +
+  geom_bar(
+    stat = "identity",
+    fill = "lightgray",
+    col = "black",
+    alpha = 0.6,
+    width = 0.75
+  ) +
+  geom_text(
+    aes(label = sprintf("%.1f%%", porcentaje)),
+    position = position_stack(vjust = 0.5),  # Centrar etiquetas
+    color = "black",
+    size = 4
+  ) +
+  scale_y_continuous(
+    labels = scales::percent_format(scale = 1),
+    limits = c(0, 50),  # Límites del eje Y: de 0% a 50%
+    expand = c(0, 0)    # Elimina espacio extra en los extremos (opcional)
+  ) +
+  labs(
+    y = "Porcentaje de viviendas", 
+    x = "Tipo de tenencia",
+    title = "Distribución del tipo de tenencia de vivienda"
+  )
