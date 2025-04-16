@@ -46,14 +46,14 @@ colnames(datos) = c("id", "provincia", "barrio",
 # 1.4: cant_integrantes - Cuantitativa discreta.
 # 3.2: max_personas_dormitorio - Cuantitativa discreta.
 # 4.3: tipo_tenencia - Categórica nominal.
-# 4.4.2: costo_alquiler: Cuantitativa continua (intervalo).
-# 5.3: presion_agua - Categórica ordinal.
-# 5.16: agua_caliente_baño - Categórica nominal.
+# 4.4.2: costo_alquiler: Cuantitativa continua (intervalo). -
+# 5.3: presion_agua - Categórica ordinal. -
+# 5.16: agua_caliente_baño - Categórica nominal. -
 # 5.2.2: litros_almacenados - Cuantitativa continua.
 # 6.2: energia_vivienda - Categórica de respuesta múltiple.
 # 9.5: material_puertas - Categórica de respuesta múltiple.
-# 9.6: material_paredes - Categórica discreta
-# 9.9: humedad - Categórica de respuesta múltiple
+# 9.6: material_paredes - Categórica discreta -
+# 9.9: humedad - Categórica de respuesta múltiple -
 # alguna de basura: 11.8
 
 # Relación categórica discreta + cuantitativa discreta: tipo_tenencia + cantidad_personas.
@@ -85,6 +85,19 @@ datos_limpios <- datos %>%
                                           "61+ años"),
                                right = TRUE,
                                ordered_result = TRUE))
+
+# Agua
+# - Pasar valores NA a 'No tiene' (asumimos NA como ausencia del atributo).
+datos_limpios <- datos %>%
+  mutate ( agua_caliente_baño = case_when(
+                                          is.na(agua_caliente_baño) ~ "No tiene",
+                                          agua_caliente_baño == "No tengo agua caliente en el baño" ~ "No tiene",
+                                          agua_caliente_baño == "Si, con un calefón eléctrico" ~ "Calefón eléctrico",
+                                          agua_caliente_baño == "Si, con una ducha eléctrica" ~ "Ducha eléctrica",
+                                          agua_caliente_baño == "Si, con un termotanque a gas" ~ "Termotanque a gas",
+                                          agua_caliente_baño == "Si, con un termotanque eléctrico" ~ "Termotanque eléctrico",
+                                          ))
+
 
 # Alquiler
 
@@ -118,16 +131,19 @@ cantidad_humedad_living <- as.numeric(sum(datos$humedad_living == "Living", na.r
 cantidad_sin_humedad <- as.numeric(sum(datos$humedad_sin == "No hay ningún problema de filtraciones/humedad", na.rm = TRUE))
 cantidad_humedad_otro <- as.numeric(sum(datos$humedad_otro == "Otro", na.rm = TRUE))
 
-# Paredes
+# Paredes, cuantas persones tienen al menos una humedad en la casa dependiendo material de pared
 
 datos %>%
   filter(
     rowSums(
       !is.na(select(., humedad_cocina, humedad_living, humedad_baño, humedad_dormitorios))
     ) > 0
-  ) %>%
+  ) %>% group_by(material_paredes_exteriores) %>%
+  summarise(cantidad_con_humedad = n()) %>%
+  arrange(desc(cantidad_con_humedad)) %>%
+  print()
   
-  View(datos_limpios)
+View(datos_limpios)
 
 # ___________________________________________
 # VISUALIZAR DATOS
@@ -146,15 +162,15 @@ datos_limpios %>% group_by(tipo_tenencia) %>%
             cant_integrantes_ds = sd(cant_integrantes))
 
 # Tabla de intervalo de precios alquiler
-datos_limpios %>% filter(!is.na(intervalo_alquiler)) %>%
-  group_by(intervalo_alquiler) %>%
+datos_limpios %>% filter(!is.na(costo_alquiler)) %>%
+  group_by(costo_alquiler) %>%
   summarize(cantidad = n())
 
-# Cuantas persones tienen al menos una humedad en la casa dependiendo material de pared
-group_by(material_paredes_exteriores) %>%
-  summarise(cantidad_con_humedad = n()) %>%
-  arrange(desc(cantidad_con_humedad)) %>%
-  print()
+# Tabla de agua (HAY QUE MEJORAR)
+datos_limpios %>% group_by(agua_baño, agua_caliente_baño) %>%
+  summarise(cantidad = n(), .groups = 'drop') %>%
+  arrange(desc(cantidad))
+
 
 # Medidas de posición.
 min(datos$edad_jefe_hogar)
