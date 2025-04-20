@@ -91,19 +91,23 @@ datos_limpios = datos_limpios %>%
 #maximo_alquiler <- max(datos$costo_alquiler, na.rm = TRUE)
 #ancho <- ceiling((maximo_alquiler - minimo_alquiler) / cantidad_intervalos)
 
+
 breaks_alquiler <- seq(from = 0, to = 30000, by = 5000)
 
 labels_alquiler <- paste0(
   head(breaks_alquiler), " - ", tail(breaks_alquiler)
 )
 
-datos_limpios <- datos_limpios %>%
-  mutate(costo_alquiler = cut(costo_alquiler,
+datos_limpios <- datos %>%
+  mutate(costo_alquiler_num = as.numeric(as.character(costo_alquiler)),  
+         costo_alquiler = cut(costo_alquiler_num,
                               breaks = breaks_alquiler,
                               labels = labels_alquiler,
-                              right = TRUE,  
-                              ordered_result = TRUE)
-  )
+                              right = TRUE,
+                              ordered_result = TRUE
+                              )
+         )
+
 
 # Humedad
 
@@ -141,17 +145,17 @@ datos_limpios = datos_limpios %>%
 
 # ___________________________________________
 # VARIABLES ELEGIDAS
-# 1.4: cant_integrantes - Cuantitativa discreta.
-# 3.2: max_personas_dormitorio - Cuantitativa discreta.
-# 4.3: tipo_tenencia - Categórica nominal.
+# 1.4: cant_integrantes - Cuantitativa discreta.-
+# 3.2: max_personas_dormitorio - Cuantitativa discreta.-
+# 4.3: tipo_tenencia - Categórica nominal.-
 # 4.4.2: costo_alquiler: Cuantitativa continua (intervalo). -
-# 5.3: presion_agua - Categórica ordinal. -
-# 5.16: agua_caliente_baño - Categórica nominal. -
+# 5.3: presion_agua - Categórica ordinal.-
+# 5.16: agua_caliente_baño - Categórica nominal.-
 # 5.2.2: litros_almacenados - Cuantitativa continua.
-# 6.2: energia_vivienda - Categórica de respuesta múltiple.
+# 6.2: energia_vivienda - Categórica de respuesta múltiple.-
 # 9.5: material_puertas - Categórica de respuesta múltiple.
-# 9.6: material_paredes - Categórica discreta -
-# 9.9: humedad - Categórica de respuesta múltiple -
+# 9.6: material_paredes - Categórica discreta 
+# 9.9: humedad - Categórica de respuesta múltiple 
 # alguna de basura: 11.8
 
 # Relación categórica discreta + cuantitativa discreta: tipo_tenencia + cantidad_personas.
