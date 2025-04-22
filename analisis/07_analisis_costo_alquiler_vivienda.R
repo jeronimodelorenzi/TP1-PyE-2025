@@ -5,10 +5,22 @@
 library(tidyverse)
 attach(datos_limpios)
 
+datos_alquiler <- datos_limpios %>%
+  filter(!is.na(costo_alquiler_num))
+
 # Tabla de intervalo de precios alquiler
-tabla_intervalos <- datos_limpios %>% filter(!is.na(costo_alquiler)) %>%
+tabla_intervalos <- datos_alquiler %>%
   group_by(costo_alquiler) %>%
-  summarize(cantidad = n())
+  summarise(
+    f_i = n(),  # Frecuencia absoluta (número de observaciones en cada intervalo)
+    h_i = (n() / nrow(datos_alquiler) )*100 # Frecuencia relativa (porcentaje sobre el total de alquileres)
+  ) %>%
+  mutate(
+    F_i = cumsum(f_i),  # Frecuencia acumulada
+    H_i = cumsum(h_i)  # Frecuencia relativa acumulada
+  )
+
+tabla_intervalos
 
 # Histograma de costo de alquiler por vivienda
 

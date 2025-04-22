@@ -83,6 +83,19 @@ datos_limpios = datos_limpios %>%
                                           ))
 
 
+# Tipo tenencia
+
+datos_limpios <- datos_limpios %>%
+  mutate(tipo_tenencia = case_when(
+    tipo_tenencia == "Prestado" ~ "Prestado",
+    tipo_tenencia == "Alquilado" ~ "Alquilado",
+    tipo_tenencia == "Propio sin títulos" ~ "Propio sin títulos",
+    tipo_tenencia == "Propio con algún comprobante de tenencia" ~ "Propio con comprobante",
+    tipo_tenencia == "Ocupado/Tomado" ~ "Ocupado",
+    tipo_tenencia == "Otro" ~ "Otro",
+  ))
+
+
 # Alquiler
 
 #cantidad_alquiler <- as.numeric(sum(datos$tipo_tenencia == "Alquilado"))
@@ -90,7 +103,6 @@ datos_limpios = datos_limpios %>%
 #minimo_alquiler <- min(datos$costo_alquiler, na.rm = TRUE)
 #maximo_alquiler <- max(datos$costo_alquiler, na.rm = TRUE)
 #ancho <- ceiling((maximo_alquiler - minimo_alquiler) / cantidad_intervalos)
-
 
 breaks_alquiler <- seq(from = 0, to = 30000, by = 5000)
 
@@ -108,7 +120,6 @@ datos_limpios <- datos %>%
                               )
          )
 
-
 # Humedad
 
 cantidad_humedad_baño <- as.numeric(sum(datos$humedad_baño == "Baño", na.rm = TRUE))
@@ -117,6 +128,17 @@ cantidad_humedad_dormitorios <- as.numeric(sum(datos$humedad_dormitorios == "Dor
 cantidad_humedad_living <- as.numeric(sum(datos$humedad_living == "Living", na.rm = TRUE))
 cantidad_sin_humedad <- as.numeric(sum(datos$humedad_sin == "No hay ningún problema de filtraciones/humedad", na.rm = TRUE))
 cantidad_humedad_otro <- as.numeric(sum(datos$humedad_otro == "Otro", na.rm = TRUE))
+
+datos_limpios <- datos_limpios %>%
+  mutate(
+    humedad_lugar = case_when(
+      !is.na(humedad_cocina) ~ "Cocina",
+      !is.na(humedad_living) ~ "Living",
+      !is.na(humedad_baño) ~ "Baño",
+      !is.na(humedad_dormitorios) ~ "Dormitorios",
+      TRUE ~ "Ninguno"
+    )
+  )
 
 # Paredes, cuantas persones tienen al menos una humedad en la casa dependiendo material de pared
 
@@ -130,7 +152,6 @@ datos_limpios %>%
   arrange(desc(cantidad_con_humedad)) %>%
   print()
 
-
 # Energia Calefaccion respuesta múltiple.
 datos_limpios = datos_limpios %>%
   mutate (
@@ -142,6 +163,39 @@ datos_limpios = datos_limpios %>%
     energia_calefaccion_no_necesita = ifelse(!is.na(energia_calefaccion_no_necesita), 1, 0 )
   )
 
+# Litros Almacenados
+# Asumimos que las respuestas de las personas a esta pregunta
+# tienen agua en altura.
+
+breaks_litros <- c(0, 200, 500, Inf)
+
+labels_litros <- c("[0, 200)", "[200, 500)", "[500, ∞)")
+
+datos_limpios <- datos %>%
+  mutate(
+    litros_intervalo = case_when(
+      litros_almacenados == "Menos de 200 lts" ~ 100,
+      litros_almacenados == "200 a 500 lts" ~ 350,
+      litros_almacenados == "Más de 500 lts" ~ 600,
+    ),
+    litros_intervalo = cut(
+      litros_intervalo,
+      breaks = breaks_litros,
+      labels = labels_litros,
+      right = FALSE,
+      ordered_result = TRUE
+    )
+  )
+
+ggplot(datos_limpios %>%
+         filter(!is.na(cant_integrantes) & !is.na(litros_intervalo))) +
+  aes(x = cant_integrantes, y = litros_intervalo) + 
+  geom_jitter(width = 0.2, height = 0.5, alpha = 0.6, color = "red") + # Jitter para dispersar puntos
+  labs(x = "Cantidad de Integrantes", y = "Litros Almacenados", 
+       title = "Relación entre la cantidad de integrantes y los litros almacenados") +
+  theme_classic()
+
+
 
 # ___________________________________________
 # VARIABLES ELEGIDAS
@@ -151,15 +205,15 @@ datos_limpios = datos_limpios %>%
 # 4.4.2: costo_alquiler: Cuantitativa continua (intervalo). -
 # 5.3: presion_agua - Categórica ordinal.-
 # 5.16: agua_caliente_baño - Categórica nominal.-
-# 5.2.2: litros_almacenados - Cuantitativa continua.
+# 5.2.2: litros_almacenados - Cuantitativa continua.-
 # 6.2: energia_vivienda - Categórica de respuesta múltiple.-
 # 9.5: material_puertas - Categórica de respuesta múltiple.
-# 9.6: material_paredes - Categórica discreta 
-# 9.9: humedad - Categórica de respuesta múltiple 
+# 9.6: material_paredes - Categórica nominal. 
+# 9.9: humedad - Categórica de respuesta múltiple.
 # alguna de basura: 11.8
 
-# Relación categórica discreta + cuantitativa discreta: tipo_tenencia + cantidad_personas.
-# Relación categórica discreta + categórica discreta: material_pared + humedad
+# Relación categórica discreta + cuantitativa discreta: tipo_tenencia + cantidad_personas.-
+# Relación categórica discreta + categórica discreta: material_pared + humedad.-
 # Relación cuantitativa + cuantitativa: cant_integrantes + litros_almacenados
 
 # Tipo de piso/tiene vereda + inundación (11.9)
