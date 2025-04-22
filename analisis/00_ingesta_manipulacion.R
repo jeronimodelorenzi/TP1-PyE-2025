@@ -70,6 +70,27 @@ datos_limpios <- datos %>%
                                right = TRUE,
                                ordered_result = TRUE))
 
+# Máxima Cantidad de Personas por Dormitorio
+# Agregamos columna "hacinamiento_dormitorio" según cantidad de personas por dormitorio, basado en datos del INDEC:
+# Sin hacinamiento: hasta 2 personas por dormitorio, 
+# Hacinamiento moderado: 3 personas por dormitorio,
+# Hacinamiento crítico: más de 3 personas por dormitorio.
+
+datos_limpios <- datos_limpios %>%
+  mutate(
+    hacinamiento_dormitorio = factor(
+      case_when(
+        max_personas_dormitorio <= 2 ~ "Sin hacinamiento",
+        max_personas_dormitorio == 3 ~ "Moderado",
+        max_personas_dormitorio >= 4 ~ "Crítico"
+      ),
+      levels = c("Sin hacinamiento", "Moderado", "Crítico")  # Orden de los niveles
+    )
+  ) %>%
+  # Posicionamos la columna luego de la columna max_personas_dormitorio
+  relocate(hacinamiento_dormitorio, .after = max_personas_dormitorio)
+
+
 # Agua
 # - Pasar valores NA a 'No tiene' (asumimos NA como ausencia del atributo).
 datos_limpios = datos_limpios %>%
@@ -194,7 +215,6 @@ ggplot(datos_limpios %>%
   labs(x = "Cantidad de Integrantes", y = "Litros Almacenados", 
        title = "Relación entre la cantidad de integrantes y los litros almacenados") +
   theme_classic()
-
 
 
 # ___________________________________________
