@@ -56,4 +56,3 @@ ggplot(datos_limpios, aes(x = "", fill = hacinamiento_dormitorio)) +
   ) +
   labs(title = "Niveles de hacinamiento según cantidad de personas por dormitorio") +
   theme_void()
-
