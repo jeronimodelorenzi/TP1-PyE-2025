@@ -5,8 +5,7 @@
 library(tidyverse)
 attach(datos_limpios)
 
-# Gráfico de barras de variable categórica en escala nominal: acceso a agua caliente en baños.
-# Gráfico de barras de variable categórica en escala nominal: acceso a agua caliente en baños
+### Gráfico de barras de variable categórica en escala nominal: acceso a agua caliente en baños.
 datos_limpios %>%
   filter(!is.na(agua_caliente_baño)) %>%  # Eliminar filas con NA en agua_caliente_baño
   count(agua_caliente_baño) %>%
@@ -17,7 +16,7 @@ datos_limpios %>%
   )) +
   geom_bar(
     stat = "identity",
-    fill = "lightgray",
+    fill = "steelblue",
     col = "black",
     alpha = 0.6,
     width = 0.75
@@ -34,8 +33,11 @@ datos_limpios %>%
     expand = c(0, 0)    # Elimina espacio extra en los extremos (opcional)
   ) +
   labs(
-    y = "Porcentaje de viviendas", 
+    y = "Porcentaje de viviendas (%)", 
     x = "Acceso a agua caliente",
     title = "Acceso a sistemas de agua caliente en baños: % de hogares por tipo"
   )
 
+
+### Medidas estadísticas: moda.
+sort(table(agua_caliente_baño), decreasing = TRUE)[1]

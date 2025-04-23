@@ -5,15 +5,15 @@
 library(tidyverse)
 attach(datos_limpios)
 
-# Gráfico boxplot de la relación entre tipo_tenencia y cant_dormitorios.
+### Gráfico boxplot de la relación entre tipo_tenencia y cant_dormitorios.
 ggplot(datos_limpios, 
        aes(x = fct_relevel(tipo_tenencia, # Orden de los boxplot.
                            "Otro",
-                           "Ocupado/Tomado",
+                           "Ocupado",
                            "Prestado",
                            "Alquilado",
                            "Propio sin títulos",
-                           "Propio con algún comprobante de tenencia"), 
+                           "Propio con comprobante"), 
            y = cant_dormitorios)) +
   geom_boxplot(show.legend = FALSE, fill = "lightblue") +
   scale_y_continuous(
@@ -32,15 +32,20 @@ ggplot(datos_limpios,
   coord_flip()
 
 
-# Medidas estadísticas.
-tabla_resumen <- datos_limpios %>%
+### Medidas estadísticas.
+tabla_medidas_tipo_tenencia <- datos_limpios %>%
   group_by(`tipo_tenencia`) %>%
   summarise(
-    `Promedio de dormitorios` = mean(cant_dormitorios, na.rm = TRUE) %>% round(2),
-    Mediana = median(cant_dormitorios, na.rm = TRUE),
-    Mínimo = min(cant_dormitorios, na.rm = TRUE),
-    Máximo = max(cant_dormitorios, na.rm = TRUE)
+    `Promedio de dormitorios` = mean(cant_dormitorios) %>% round(2),
+    Mediana = median(cant_dormitorios),
+    Mínimo = min(cant_dormitorios),
+    Máximo = max(cant_dormitorios),
+    Q1 = quantile(cant_dormitorios, 0.25),
+    Q3 = quantile(cant_dormitorios, 0.75),
+    Rango_Intercuartil = IQR(cant_dormitorios),
+    Desvío = sd(cant_dormitorios),
+    CV = (sd(cant_dormitorios) / mean(cant_dormitorios)) * 100
   ) %>%
   arrange(desc(`Promedio de dormitorios`))  # Ordena de mayor a menor promedio
 
-tabla_resumen
+tabla_medidas_tipo_tenencia

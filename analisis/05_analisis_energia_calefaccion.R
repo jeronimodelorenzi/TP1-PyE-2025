@@ -5,7 +5,7 @@
 library(tidyverse)
 attach(datos_limpios)
 
-# Visualizar datos.
+### Visualizar datos.
 datos_reducido1 <- datos_limpios %>%
   select(   # Seleccionar las columnas que quiero conservar
     energia_calefaccion_electricidad, 
@@ -16,7 +16,9 @@ datos_reducido1 <- datos_limpios %>%
     energia_calefaccion_no_necesita
   )
 
-# Vector con nombres para las barras.
+# View(datos_reducido1)
+
+### Vector con nombres para las barras.
 vector_nombres_calefaccion <- c(
   energia_calefaccion_gas_natural = "Gas natural",
   energia_calefaccion_garrafa = "Garrafa",
@@ -26,7 +28,7 @@ vector_nombres_calefaccion <- c(
   energia_calefaccion_no_necesita = "No necesita"
 )
 
-# Código con nombres. VERIFICAR PORCENTAJES.
+### Gráfico de barras de distribución del uso de energía para calefacción.
 datos_limpios %>%
   select(all_of(names(vector_nombres_calefaccion))) %>%
   summarise(across(everything(), ~sum(. == 1, na.rm = TRUE))) %>%
@@ -41,7 +43,7 @@ datos_limpios %>%
   )) +
   geom_bar(
     stat = "identity",
-    fill = "lightgray",
+    fill = "steelblue",
     col = "black",
     alpha = 0.6,
     width = 0.75
