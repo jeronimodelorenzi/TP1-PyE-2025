@@ -43,34 +43,17 @@ ggplot(datos_limpios) +
 
 # Gráfico de torta de variable hacinamiento_dormitorio.
 ggplot(datos_limpios, aes(x = "", fill = hacinamiento_dormitorio)) +
-  geom_bar(width = 1, color = "white") +
+  geom_bar(aes(y = ..count../sum(..count..)), width = 1, color = "white") +
   coord_polar("y") +
-  scale_fill_manual(values = c("#7ed321", "#f1c40f", "#e74c3c")) +
-  labs(title = "Niveles de hacinamiento") +
-  theme_void()
-
-
-
-# Gráfico de bastones de máxima cantidad de personas por dormitorio y condición de hacinamiento.
-ggplot(datos_limpios, 
-       aes(x = max_personas_dormitorio,
-           y = ..count../sum(..count..),
-           fill = hacinamiento_dormitorio)) +
-  geom_bar(width = 0.1, stat = "count") +
-  scale_x_continuous(breaks = function(x) seq(0, max(x, na.rm = TRUE), by = 1)) +
-  scale_y_continuous(labels = scales::percent, limits = c(0, 0.45)) +
-  scale_fill_manual(name = "Hacinamiento", values = c("Sin hacinamiento" = "#7ed321", "Moderado" = "#f1c40f", "Crítico" = "#e74c3c")) +
-  # Texto con porcentajes
-  geom_text( 
+  scale_fill_manual(name = "Hacinamiento", values = c("#7ed321", "#f1c40f", "#e74c3c")) +
+  geom_text(
     stat = "count",
-    aes(label = scales::percent(..count../sum(..count..), accuracy = 0.1)),
-    vjust = -1,
-    size = 3.5,
+    aes(label = paste0(round(..count../sum(..count..)*100, 1), "%"),
+        y = ..count../sum(..count..)),
+    position = position_stack(vjust = 0.5),
+    color = "black",
+    size = 4
   ) +
-  labs(
-    x = "Máx. personas por dormitorio", 
-    y = "Porcentaje de hogares (%)",
-    title = "Distribución de máxima cantidad de personas por dormitorio y nivel de hacinamiento"
-  )
-
+  labs(title = "Niveles de hacinamiento según cantidad de personas por dormitorio") +
+  theme_void()
 

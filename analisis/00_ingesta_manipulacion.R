@@ -80,11 +80,11 @@ datos_limpios <- datos_limpios %>%
   mutate(
     hacinamiento_dormitorio = factor(
       case_when(
-        max_personas_dormitorio <= 2 ~ "Sin hacinamiento",
-        max_personas_dormitorio == 3 ~ "Moderado",
-        max_personas_dormitorio >= 4 ~ "Crítico"
+        max_personas_dormitorio <= 2 ~ "Sin hacinamiento (menos de 2 por dormitorio)",
+        max_personas_dormitorio == 3 ~ "Moderado (3 por dormitorio)",
+        max_personas_dormitorio >= 4 ~ "Crítico (más de 4 por dormitorio)"
       ),
-      levels = c("Sin hacinamiento", "Moderado", "Crítico")  # Orden de los niveles
+      levels = c("Sin hacinamiento (menos de 2 por dormitorio)", "Moderado (3 por dormitorio)", "Crítico (más de 4 por dormitorio)")  # Orden de los niveles
     )
   ) %>%
   # Posicionamos la columna luego de la columna max_personas_dormitorio
@@ -93,7 +93,7 @@ datos_limpios <- datos_limpios %>%
 
 # Agua
 # - Pasar valores NA a 'No tiene' (asumimos NA como ausencia del atributo).
-datos_limpios = datos_limpios %>%
+datos_limpios <- datos_limpios %>%
   mutate ( agua_caliente_baño = case_when(
                                           is.na(agua_caliente_baño) ~ "No tiene",
                                           agua_caliente_baño == "No tengo agua caliente en el baño" ~ "No tiene",
@@ -192,7 +192,7 @@ breaks_litros <- c(0, 200, 500, Inf)
 
 labels_litros <- c("[0, 200)", "[200, 500)", "[500, ∞)")
 
-datos_limpios <- datos %>%
+datos_limpios <- datos_limpios %>%
   mutate(
     litros_intervalo = case_when(
       litros_almacenados == "Menos de 200 lts" ~ 100,
