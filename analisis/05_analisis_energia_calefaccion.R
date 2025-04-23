@@ -28,6 +28,9 @@ vector_nombres_calefaccion <- c(
   energia_calefaccion_no_necesita = "No necesita"
 )
 
+# Total de viviendas
+total_viviendas <- nrow(datos_limpios)
+
 ### Gráfico de barras de distribución del uso de energía para calefacción.
 datos_limpios %>%
   select(all_of(names(vector_nombres_calefaccion))) %>%
@@ -35,10 +38,10 @@ datos_limpios %>%
   pivot_longer(cols = everything(), names_to = "tipo_energia", values_to = "n") %>%
   mutate(
     tipo_energia_nuevo = vector_nombres_calefaccion[tipo_energia],
-    porcentaje = n / sum(n) * 100
+    porcentaje = n / total_viviendas * 100
   ) %>%
   ggplot(aes(
-    x = reorder(tipo_energia_nuevo, -n),
+    x = reorder(tipo_energia_nuevo, -porcentaje),
     y = porcentaje
   )) +
   geom_bar(
@@ -50,24 +53,24 @@ datos_limpios %>%
   ) +
   geom_text(
     aes(label = sprintf("%.1f%%", porcentaje)),
-    position = position_stack(vjust = 0.5),
+    vjust = -0.5,
     color = "black",
     size = 4
   ) +
   scale_y_continuous(
     labels = scales::percent_format(scale = 1),
-    limits = c(0, 45),
-    expand = c(0, 0)
+    limits = c(0, NA),
+    expand = expansion(mult = c(0, 0.05))
   ) +
   labs(
     x = "Tipo de energía para calefacción",
     y = "Porcentaje de viviendas",
-    title = "Distribución del uso de energía para calefacción"
+    title = "Uso de fuentes de energía para calefacción (porcentaje de hogares)"
   ) +
   theme_minimal()
 
 # Conteo de registros para verificar.
-conteo_1 <- sum(datos_limpios$energia_calefaccion_leña_carbon == 1, na.rm = TRUE)
+conteo_1 <- sum(datos_limpios$energia_calefaccion_sin == 1, na.rm = TRUE)
 
 # Total de registros no faltantes
 total <- sum(!is.na(datos_limpios$max_personas_dormitorio))
