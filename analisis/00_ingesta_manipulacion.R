@@ -48,13 +48,6 @@ convertir_a_factor_ordenado <- function(var, niveles, etiquetas = NULL) {
   factor(var, levels = niveles, labels = etiquetas %||% niveles, ordered = TRUE)
 }
 
-limpiar_texto <- function(texto) {
-  texto %>%
-    str_to_lower() %>%
-    str_trim() %>%
-    str_squish()
-}
-
 
 # ___________________________________________
 # LIMPIEZA DE DATOS
