@@ -66,14 +66,4 @@ datos_limpios %>%
     x = "Tipo de energía para calefacción",
     y = "Porcentaje de viviendas",
     title = "Uso de fuentes de energía para calefacción (porcentaje de hogares)"
-  ) +
-  theme_minimal()
-
-# Conteo de registros para verificar.
-conteo_1 <- sum(datos_limpios$energia_calefaccion_sin == 1, na.rm = TRUE)
-
-# Total de registros no faltantes
-total <- sum(!is.na(datos_limpios$max_personas_dormitorio))
-
-# Porcentaje
-(conteo_1 / total) * 100
+  )

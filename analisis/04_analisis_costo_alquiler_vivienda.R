@@ -23,6 +23,9 @@ tabla_intervalos_alquiler <- datos_alquiler %>%
 
 tabla_intervalos_alquiler
 
+### Porcentaje entre $8.000 y $16.000.
+mean(datos_alquiler$costo_alquiler_num >= 8000 & datos_alquiler$costo_alquiler_num <= 16000) * 100
+
 
 ### Histograma de costo de alquiler por vivienda.
 ggplot(datos_alquiler) +
@@ -33,14 +36,14 @@ ggplot(datos_alquiler) +
     breaks = seq(0, 30000, by = 2000)
   ) +
   scale_x_continuous(
-    breaks = seq(0, 30000, by = 5000),
+    breaks = seq(0, 30000, by = 2000),
     labels = scales::dollar_format(prefix = "$", big.mark = ".")
   ) +
   scale_y_continuous(labels = scales::percent) +
   labs(
     x = "Costo de alquiler",
-    y = "Frecuencia relativa (%)",
-    title = "Distribución del costo de alquiler"
+    y = "Porcentaje de hogares (%)",
+    title = "Distribución del costo de alquiler en los barrios"
   )
 
 

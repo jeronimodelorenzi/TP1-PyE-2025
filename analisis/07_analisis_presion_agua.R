@@ -19,7 +19,7 @@ tabla_frecuencia_presion_agua =
 tabla_frecuencia_presion_agua
 
 
-# Gráfico de barras de variable categórica ordinal: presión del agua en viviendas.
+### Gráfico de barras de presión del agua en viviendas.
 # 1. Definir orden y calcular frecuencias/porcentajes.
 datos_grafico <- datos_limpios %>%
   count(presion_agua) %>%
@@ -32,7 +32,7 @@ datos_grafico <- datos_limpios %>%
 
 # 2. Crear gráfico de barras
 ggplot(datos_grafico, aes(x = presion_agua, y = porcentaje)) +
-  geom_col(width = 0.7, color = "black", fill = "steelblue") +
+  geom_col(width = 0.4, color = "black", fill = "steelblue") +
   geom_text(
     aes(label = sprintf("%.1f%%", porcentaje)),
     vjust = -0.5,
@@ -48,7 +48,7 @@ ggplot(datos_grafico, aes(x = presion_agua, y = porcentaje)) +
 
 
 # Medidas estadísticas.
-# 1. Asegurar que la variable sea un factor ORDENADO
+# 1. Asegurar que la variable sea un factor ordenado.
 datos_limpios <- datos_limpios %>%
   mutate(
     presion_agua = factor(
@@ -58,7 +58,7 @@ datos_limpios <- datos_limpios %>%
     )
   )
 
-# 2. Calcular la mediana (categoría central)
+# 2. Calcular la mediana.
 mediana_presion <- datos_limpios$presion_agua[median(as.numeric(datos_limpios$presion_agua))] %>% 
   as.character()
 

@@ -1,6 +1,7 @@
 # _________________
 # TIPO_TENENCIA y CANT_DORMITORIOS: Variable categórica nominal y cuantitativa discreta.
 # Visualización, estadísticas y gráficos.
+
 library(tidyverse)
 attach(datos_limpios)
 
@@ -16,5 +17,3 @@ datos_limpios %>%
   labs(x="Cantidad Integrantes", 
        y="Cantidad Dormitorios", 
        title = "Relación entre cantidad de integrantes y cantidad de dormitorios")
-
-
