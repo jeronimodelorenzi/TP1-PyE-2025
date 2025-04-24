@@ -38,7 +38,7 @@ ggplot(datos_limpios) +
   ) +
   labs(x = "Máx. personas por dormitorio", 
        y = "Porcentaje de hogares (%)",
-       title = "Distribución de personas por dormitorio")
+       title = "Distribución de los hogares según cantidad de personas por dormitorio. Barrios populares de Argentina, año 2022.")
 
 
 ### Gráfico de torta de variable hacinamiento_dormitorio.
@@ -54,7 +54,7 @@ ggplot(datos_limpios, aes(x = "", fill = hacinamiento_dormitorio)) +
     color = "black",
     size = 4
   ) +
-  labs(title = "Niveles de hacinamiento según cantidad de personas por dormitorio") +
+  labs(title = "Proporción de hogares según nivel de hacinamiento (personas por dormitorio). Barrios populares de Argentina, año 2022.") +
   theme_void()
 
 

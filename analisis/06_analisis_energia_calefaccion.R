@@ -65,5 +65,5 @@ datos_limpios %>%
   labs(
     x = "Tipo de energía para calefacción",
     y = "Porcentaje de viviendas",
-    title = "Uso de fuentes de energía para calefacción (porcentaje de hogares)"
+    title = "Tipos de fuentes de energía utilizadas para calefacción en los hogares. Barrios populares de Argentina, año 2022."
   )

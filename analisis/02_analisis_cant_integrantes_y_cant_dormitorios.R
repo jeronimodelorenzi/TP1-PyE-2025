@@ -16,4 +16,4 @@ datos_limpios %>%
   scale_y_continuous(breaks=0:max(datos_limpios$menores_18)) +
   labs(x="Cantidad Integrantes", 
        y="Cantidad Dormitorios", 
-       title = "Relación entre cantidad de integrantes y cantidad de dormitorios")
+       title = "Relación entre cantidad de integrantes del hogar y cantidad de dormitorios. Barrios populares de Argentina, año 2022.")

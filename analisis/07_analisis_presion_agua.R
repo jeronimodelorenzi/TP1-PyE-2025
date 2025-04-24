@@ -41,7 +41,7 @@ ggplot(datos_grafico, aes(x = presion_agua, y = porcentaje)) +
   ) +
   scale_y_continuous(limits = c(0, 50)) + # Límite del 50%
   labs(
-    title = "Distribución de la presión del agua en hogares",
+    title = "Distribución de los hogares según nivel percibido de presión del agua. Barrios populares de Argentina, año 2022.",
     x = "Nivel de presión",
     y = "Porcentaje de hogares"
   )

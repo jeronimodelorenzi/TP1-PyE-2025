@@ -35,7 +35,7 @@ datos_limpios %>%
   labs(
     y = "Porcentaje de viviendas (%)", 
     x = "Acceso a agua caliente",
-    title = "Acceso a sistemas de agua caliente en baños: % de hogares por tipo"
+    title = "Acceso a sistemas de agua caliente en baños según tipo de instalación. Barrios populares de Argentina, año 2022."
   )
 
 

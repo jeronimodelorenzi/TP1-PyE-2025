@@ -27,7 +27,7 @@ ggplot(datos_limpios,
   labs(
     x = "Tipo de tenencia de la vivienda",
     y = "Cantidad de dormitorios",
-    title = "Distribución de cantidad de dormitorios según tipo de tenencia"
+    title = "Distribución de la cantidad de dormitorios según tipo de tenencia de la vivienda. Barrios populares de Argentina, año 2022."
   ) +
   coord_flip()
 

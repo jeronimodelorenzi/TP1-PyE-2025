@@ -43,7 +43,7 @@ ggplot(datos_alquiler) +
   labs(
     x = "Costo de alquiler",
     y = "Porcentaje de hogares (%)",
-    title = "Distribución del costo de alquiler en los barrios"
+    title = "Distribución del costo mensual de alquiler en hogares inquilinos. Barrios populares de Argentina, año 2022."
   )
 
 
